@@ -1,34 +1,45 @@
-// Simulated API endpoint for fetching quotes
-const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
-
-// Fetch quotes from the server and update local storage
-async function fetchQuotesFromServer() {
+// Send a new quote to the server
+async function sendQuoteToServer(quote) {
     try {
-        const response = await fetch(SERVER_URL);
-        if (!response.ok) throw new Error("Failed to fetch quotes from server");
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(quote)
+        });
 
-        const serverQuotes = await response.json();
+        if (!response.ok) throw new Error("Failed to send quote to server");
 
-        // Transform mock server data to match your quote structure
-        const formattedQuotes = serverQuotes.map(item => ({
-            text: item.title || "No text available",
-            author: item.body || "Unknown author",
-            category: "Server"
-        }));
-
-        // Merge with local quotes, prioritizing server data
-        localStorage.setItem("quotes", JSON.stringify(formattedQuotes));
-
-        console.log("Quotes fetched from server:", formattedQuotes);
-        displayQuotes(formattedQuotes);
+        const result = await response.json();
+        console.log("Quote sent to server:", result);
 
     } catch (error) {
-        console.error("Error fetching quotes:", error);
+        console.error("Error sending quote:", error);
     }
 }
 
-// Example: Fetch server quotes every 30 seconds
-setInterval(fetchQuotesFromServer, 30000);
+// Example: Hook into your "add quote" form
+document.getElementById("addQuoteForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-// Fetch once on page load
-fetchQuotesFromServer();
+    const text = document.getElementById("quoteText").value;
+    const author = document.getElementById("quoteAuthor").value;
+    const category = document.getElementById("quoteCategory").value;
+
+    const newQuote = { text, author, category };
+
+    // Save locally
+    let quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    quotes.push(newQuote);
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+
+    // Send to server
+    sendQuoteToServer(newQuote);
+
+    // Refresh display
+    displayQuotes(quotes);
+
+    // Clear form
+    e.target.reset();
+});
