@@ -1,35 +1,40 @@
-// Simulated API endpoint (replace with actual API if needed)
+// Simulated API endpoint
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
-// Fetch quotes from server
-async function fetchQuotesFromServer() {
+// Send a new quote to the server
+async function sendQuoteToServer(quote) {
     try {
-        const response = await fetch(SERVER_URL);
-        if (!response.ok) throw new Error("Failed to fetch from server");
+        const response = await fetch(SERVER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: quote.text,
+                author: quote.author,
+                category: quote.category
+            })
+        });
 
-        // Simulate that the server returns quotes
-        const serverData = await response.json();
-        const serverQuotes = serverData.map(item => ({
-            text: item.title,
-            author: "Unknown",
-            category: "General"
-        }));
+        if (!response.ok) throw new Error("Failed to send quote to server");
 
-        // Merge with local storage data
-        let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-
-        // Simple conflict resolution: server wins
-        const mergedQuotes = [...serverQuotes];
-
-        localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
-        displayQuotes(mergedQuotes);
-
-        console.log("Quotes synced with server");
+        const data = await response.json();
+        console.log("Quote successfully sent to server:", data);
 
     } catch (error) {
-        console.error("Error fetching quotes:", error);
+        console.error("Error sending quote:", error);
     }
 }
 
-// Call periodically to simulate live sync
-setInterval(fetchQuotesFromServer, 30000); // every 30s
+// Example: Hook into your "add new quote" function
+function addNewQuote(text, author, category) {
+    let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    const newQuote = { text, author, category };
+    localQuotes.push(newQuote);
+    localStorage.setItem("quotes", JSON.stringify(localQuotes));
+
+    displayQuotes(localQuotes);
+
+    // Also send to server
+    sendQuoteToServer(newQuote);
+}
