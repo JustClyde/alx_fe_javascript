@@ -35,3 +35,4 @@ fetchQuotesFromServer();
 
 script.js doesn't contain: ["method", "POST", "headers", "application/json", "Content-Type"]
 script.js doesn't contain: ["syncQuotes"]
+script.js doesn't contain: ["alert", "Quotes synced with server!"]
