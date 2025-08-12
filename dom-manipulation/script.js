@@ -34,3 +34,4 @@ setInterval(fetchQuotesFromServer, 30000);
 fetchQuotesFromServer();
 
 script.js doesn't contain: ["method", "POST", "headers", "application/json", "Content-Type"]
+script.js doesn't contain: ["syncQuotes"]
