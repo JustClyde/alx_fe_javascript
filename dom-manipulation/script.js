@@ -1,40 +1,34 @@
-// Simulated API endpoint
+// Simulated API endpoint for fetching quotes
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
-// Send a new quote to the server
-async function sendQuoteToServer(quote) {
+// Fetch quotes from the server and update local storage
+async function fetchQuotesFromServer() {
     try {
-        const response = await fetch(SERVER_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                text: quote.text,
-                author: quote.author,
-                category: quote.category
-            })
-        });
+        const response = await fetch(SERVER_URL);
+        if (!response.ok) throw new Error("Failed to fetch quotes from server");
 
-        if (!response.ok) throw new Error("Failed to send quote to server");
+        const serverQuotes = await response.json();
 
-        const data = await response.json();
-        console.log("Quote successfully sent to server:", data);
+        // Transform mock server data to match your quote structure
+        const formattedQuotes = serverQuotes.map(item => ({
+            text: item.title || "No text available",
+            author: item.body || "Unknown author",
+            category: "Server"
+        }));
+
+        // Merge with local quotes, prioritizing server data
+        localStorage.setItem("quotes", JSON.stringify(formattedQuotes));
+
+        console.log("Quotes fetched from server:", formattedQuotes);
+        displayQuotes(formattedQuotes);
 
     } catch (error) {
-        console.error("Error sending quote:", error);
+        console.error("Error fetching quotes:", error);
     }
 }
 
-// Example: Hook into your "add new quote" function
-function addNewQuote(text, author, category) {
-    let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-    const newQuote = { text, author, category };
-    localQuotes.push(newQuote);
-    localStorage.setItem("quotes", JSON.stringify(localQuotes));
+// Example: Fetch server quotes every 30 seconds
+setInterval(fetchQuotesFromServer, 30000);
 
-    displayQuotes(localQuotes);
-
-    // Also send to server
-    sendQuoteToServer(newQuote);
-}
+// Fetch once on page load
+fetchQuotesFromServer();
