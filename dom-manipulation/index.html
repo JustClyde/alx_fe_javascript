@@ -1,73 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dynamic Quote Generator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f4f4f4;
-    }
-    h1 {
-      color: #333;
-      text-align: center;
-    }
-    #quoteDisplay {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .quote-category {
-      color: #777;
-      font-size: 0.9rem;
-    }
-    button {
-      background-color: #333;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #555;
-    }
-    .form-container {
-      margin-top: 20px;
-      text-align: center;
-    }
-    input {
-      padding: 8px;
-      margin: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+    body { font-family: Arial, Helvetica, sans-serif; margin: 24px; background:#fafafa; color:#222; }
+    h1 { text-align:center; }
+    #app { max-width:900px; margin:20px auto; }
+    #quoteDisplay { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.06); min-height:80px; text-align:center; }
+    .quote-text { font-size:1.25rem; margin-bottom:8px; }
+    .quote-category { color:#777; font-size:.95rem; }
+    .controls { display:flex; gap:.5rem; justify-content:center; margin:16px 0; flex-wrap:wrap; }
+    button{ padding:8px 14px; border:none; border-radius:6px; background:#0b6; color:#fff; cursor:pointer }
+    button:hover{ opacity:0.92 }
+    input[type="text"]{ padding:8px; border-radius:6px; border:1px solid #ddd; width:220px }
+    #form-root{ margin-top:18px; display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap }
+    #importFile{ display:inline-block }
+    .small { font-size:.9rem; color:#666; text-align:center; margin-top:10px }
+    select { padding:8px; border-radius:6px; border:1px solid #ddd }
   </style>
 </head>
 <body>
+  <div id="app">
+    <h1>Dynamic Quote Generator</h1>
 
-  <h1>Dynamic Quote Generator</h1>
-  
-  <!-- Quote Display -->
-  <div id="quoteDisplay">Click the button to see a quote!</div>
-  
-  <!-- Show New Quote -->
-  <div style="text-align:center;">
-    <button id="newQuote">Show New Quote</button>
-  </div>
+    <div id="quoteDisplay">
+      <p class="quote-text">Click "Show New Quote" to begin.</p>
+      <p class="quote-category"></p>
+    </div>
 
-  <!-- Add New Quote -->
-  <div class="form-container">
-    <h3>Add a New Quote</h3>
-    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button id="addQuoteBtn">Add Quote</button>
+    <div class="controls" aria-label="controls">
+      <select id="categoryFilter">
+        <option value="all">All categories</option>
+      </select>
+
+      <button id="newQuote">Show New Quote</button>
+      <button id="exportJson">Export JSON</button>
+
+      <!-- import file input -->
+      <input type="file" id="importFile" accept=".json" />
+      <button id="clearLocal">Clear Saved Quotes</button>
+    </div>
+
+    <div id="form-root"><!-- form will be created here by JS --></div>
+
+    <div class="small">
+      <div>Note: quotes are saved in <strong>localStorage</strong>. Last shown quote saved in <strong>sessionStorage</strong>.</div>
+    </div>
   </div>
 
   <script src="script.js"></script>
