@@ -33,3 +33,4 @@ setInterval(fetchQuotesFromServer, 30000);
 // Fetch once on page load
 fetchQuotesFromServer();
 
+script.js doesn't contain: ["method", "POST", "headers", "application/json", "Content-Type"]
